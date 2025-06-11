@@ -30,7 +30,7 @@
             @auth
             <a href="{{ route('home')}}" class="btn">Home</a>
             <span class="border-r-2 pr-2">
-                <span class="font-bold">Hello, {{ auth()->user()->name }}</span>
+                <a href="{{ route('profile') }}" class="font-bold">Hello, {{ auth()->user()->name }}</a>
             </span>
             <form action="{{ route('logout')}}" method="POST" class="m-0">
                 @csrf

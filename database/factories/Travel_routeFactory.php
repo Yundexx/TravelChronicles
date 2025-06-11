@@ -23,7 +23,7 @@ class Travel_routeFactory extends Factory
             'city_name' => fake()->city(),
             'start_location' => '56.951332440328 656, 24.112974959604376',
             'end_location' => '56.951332440328600, 24.112974959604300',
-            'user_id'
+            'user_id'=> 1
         ];
     }
 }

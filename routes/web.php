@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MapController;
+use App\Http\Controllers\FeedbackController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,9 +16,8 @@ Route::get('/about', function () {
 
 Route::get('/map', [MapController::class, 'index'])->name('map');
 
-Route::get('adminpanel', function() {
-    return view('adminpanel');
-})->name('adminpanel')->middleware('auth');
+Route::get('/routes/{route}/feedback', [FeedbackController::class, 'index']);
+Route::post('/routes/{route}/feedback', [FeedbackController::class, 'store']);
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('show.register');

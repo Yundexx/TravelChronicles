@@ -80,11 +80,11 @@
             </nav>
         </header> 
 
-        <main class="container max-w-screen-xl flex flex-col min-h-screen mx-auto px-8">
+        <main class="container max-w-screen-xl flex flex-col mx-auto px-8">
             {{ $slot }}
         </main>
 
-        <footer class="text-center mt-8 bottom-0">
+        <footer class="text-center mt-8">
             <a href="{{ route('about')}}" class="btn">About us</a>
             <p >&copy; {{ date('Y') }} Travel Chronicles. All rights reserved.</p>
         </footer>

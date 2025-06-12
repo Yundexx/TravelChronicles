@@ -1,7 +1,10 @@
+@php
+    // Ensure $route->id is available for feedback association
+@endphp
 <x-layout>
     <div class="flex gap-8 my-8">
         <!-- Map column -->
-        <div class="w-2/5">
+        <div class="w-2/5" id="map-column">
             <div id="map" class="w-full h-[500px] rounded shadow"></div>
         </div>
         <!-- Table column -->
@@ -11,26 +14,42 @@
                 <table class="min-w-full bg-white" id="routes-table">
                     <thead>
                         <tr>
-                            <th class="px-4 py-2">Name</th>
-                            <th class="px-4 py-2">Start</th>
-                            <th class="px-4 py-2">End</th>
-                            <th class="px-4 py-2"></th>
+                            <th class="px-4 py-2 bg-white sticky top-0 z-10">Name</th>
+                            <th class="px-4 py-2 bg-white sticky top-0 z-10">City</th>
+                            <th class="px-4 py-2 bg-white sticky top-0 z-10">Start</th>
+                            <th class="px-4 py-2 bg-white sticky top-0 z-10">End</th>
+                            <th class="px-4 py-2 bg-white sticky top-0 z-10"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($routes as $route)
-                            <tr data-start="{{ $route->start_location }}" data-end="{{ $route->end_location }}">
+                            <tr data-start="{{ $route->start_location }}" data-end="{{ $route->end_location }}" data-route-id="{{ $route->id }}">
                                 <td class="px-4 py-2">{{ $route->name }}</td>
+                                <td class="px-4 py-2">{{ $route->city_name ?? '-' }}</td>
                                 <td class="px-4 py-2">{{ $route->start_location }}</td>
                                 <td class="px-4 py-2">{{ $route->end_location }}</td>
-                                <td class="px-4 py-2">
+                                <td class="px-4 py-2 flex gap-2">
                                     <button class="btn select-route">Show on Map</button>
+                                    <button class="btn show-feedback">Feedbacks</button>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h3 class="text-lg font-bold mb-2">Feedbacks</h3>
+            <ul id="feedback-list" class="mb-4 max-h-40 overflow-y-auto"></ul>
+            <form id="feedback-form" class="flex flex-col gap-2">
+                <textarea name="feedback" id="feedback-input" rows="2" class="border rounded p-2" placeholder="Leave your feedback..."></textarea>
+                <button type="submit" class="btn">Submit Feedback</button>
+            </form>
+            <button id="close-feedback" class="btn mt-2">Close</button>
         </div>
     </div>
 
@@ -59,12 +78,10 @@
             }
 
             async function getCoords(location) {
-                // Check if location is in "lat, lng" format
                 const coordMatch = location.match(/^\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\s*$/);
                 if (coordMatch) {
                     return [parseFloat(coordMatch[1]), parseFloat(coordMatch[3])];
                 }
-                // Otherwise, geocode as before
                 const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
                 const res = await fetch(url);
                 const data = await res.json();
@@ -94,6 +111,62 @@
                     }
                 });
             });
+
+            // Feedback modal logic
+            let currentRouteId = null;
+            const mapColumn = document.getElementById('map-column');
+            const feedbackModal = document.getElementById('feedback-modal');
+            const feedbackList = document.getElementById('feedback-list');
+            const feedbackForm = document.getElementById('feedback-form');
+            const feedbackInput = document.getElementById('feedback-input');
+            const closeFeedback = document.getElementById('close-feedback');
+
+            document.querySelectorAll('.show-feedback').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const row = this.closest('tr');
+                    currentRouteId = row.getAttribute('data-route-id');
+                    feedbackModal.classList.remove('hidden');
+                    mapColumn.classList.add('hidden');
+                    feedbackInput.value = '';
+                    await loadFeedbacks(currentRouteId);
+                });
+            });
+
+            closeFeedback.addEventListener('click', () => {
+                feedbackModal.classList.add('hidden');
+                mapColumn.classList.remove('hidden');
+            });
+
+            feedbackForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const feedback = feedbackInput.value.trim();
+                if (!feedback) return;
+                // Save feedback via AJAX
+                await fetch(`/routes/${currentRouteId}/feedback`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ feedback })
+                });
+                feedbackInput.value = '';
+                await loadFeedbacks(currentRouteId);
+            });
+
+            async function loadFeedbacks(routeId) {
+                feedbackList.innerHTML = '<li>Loading...</li>';
+                const res = await fetch(`/routes/${routeId}/feedback`);
+                const data = await res.json();
+                feedbackList.innerHTML = '';
+                if (data.length === 0) {
+                    feedbackList.innerHTML = '<li class="text-gray-500">No feedbacks yet.</li>';
+                } else {
+                    data.forEach(fb => {
+                        feedbackList.innerHTML += `<li class="border-b py-1">${fb.feedback}</li>`;
+                    });
+                }
+            }
         </script>
     @endpush
 </x-layout>

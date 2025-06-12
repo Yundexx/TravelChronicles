@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('start_location');
             $table->string('end_location');
             $table->string('country_name');
-            $table->string('city_name');
+            $table->string('city_name')->nullable()->default('-'); // Default to '-' if not provided
             $table->boolean('flagged')->default(false); // Flag for inspection 
         });
     }

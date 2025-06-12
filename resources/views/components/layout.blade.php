@@ -12,33 +12,30 @@
     }
   </style>
 </head>
-<body>
-    @if (session('success'))
-        <div id="flash" class="p-4 text-center bg-green-50 text-green-500 font-bold transition-opacity duration-700 opacity-100">
-            {{ session('success') }}
+<body class="min-h-screen flex flex-col">
+    <div class="flex-1 flex flex-col">
+        <div class="fixed inset-0 -z-10">
+            <img src="{{ asset('images/background.png') }}" alt="Background" class="w-full h-full object-cover blur" />
         </div>
-        <script>
-            setTimeout(() => {
-                const flash = document.getElementById('flash');
-                const site = document.getElementById('site-content');
-                if (flash) {
-                    flash.style.opacity = '0';
-                    setTimeout(() => {
-                        flash.style.display = 'none';
-                        if (site) {
-                            site.style.transform = 'translateY(-40px)';
-                            setTimeout(() => {
-                                site.style.transform = '';
-                            }, 700);
-                        }
-                    }, 700); // Wait for fade-out before moving site
-                }
-            }, 3000); // 3 seconds
-        </script>
-    @endif
 
-    <div id="site-content">
-        <header>
+        @if (session('success'))
+            <div id="flash" class="p-4 text-center bg-green-50 text-green-500 font-bold transition-opacity duration-700 opacity-100">
+                {{ session('success') }}
+            </div>
+            <script>
+                setTimeout(() => {
+                    const flash = document.getElementById('flash');
+                    if (flash) {
+                        flash.style.opacity = '0';
+                        setTimeout(() => {
+                            flash.style.display = 'none';
+                        }, 700);
+                    }
+                }, 3000); // 3 seconds
+            </script>
+        @endif
+
+        <header class="sticky top-0 z-50 bg-white shadow">
             <nav class="w-full flex items-center justify-between gap-5 px-8 py-4">
                 <a href="{{ route('welcome')}}" class="flex items-center shrink-0 text-2xl font-bold m-0 h-full">
                     Travel Chronicles
@@ -52,6 +49,7 @@
                     @endguest
 
                     @auth
+                        <a href="{{ route('create.route')}}" class="btn">Create route</a>
                         <a href="{{ route('home')}}" class="btn">Home</a>
                         <span class="relative border-r-2 pr-2">
                             <button
@@ -80,10 +78,9 @@
             </nav>
         </header> 
 
-        <main class="container max-w-screen-xl flex flex-col mx-auto px-8">
+        <main class="container max-w-screen-xl flex-1 flex flex-col mx-auto px-8">
             {{ $slot }}
         </main>
-
         <footer class="text-center mt-8">
             <a href="{{ route('about')}}" class="btn">About us</a>
             <p >&copy; {{ date('Y') }} Travel Chronicles. All rights reserved.</p>

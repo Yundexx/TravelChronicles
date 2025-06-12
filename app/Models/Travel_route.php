@@ -9,9 +9,12 @@ class Travel_route extends Model
 {
     protected $fillable = [
         'name',
+        'description',
+        'country_name',
+        'city_name',
         'start_location',
         'end_location',
-        'description',
+        'user_id',
         'flagged'
     ];
     /** @use HasFactory<\Database\Factories\TravelRouteFactory> */

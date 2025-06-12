@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('feedbacks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('route_id')->constrained('routes')->onDelete('cascade');
+            $table->foreignId('route_id')->constrained('travel_routes')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->text('feedback');
             $table->timestamps();
         });
@@ -23,7 +24,7 @@ return new class extends Migration
      * Reverse the migrations.
      */
     public function down(): void
-    {
+    { 
         Schema::dropIfExists('feedbacks');
     }
 };

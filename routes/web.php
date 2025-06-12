@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MapController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -12,9 +13,7 @@ Route::get('/about', function () {
     return view('about');
 })->name('about');
 
-Route::get('/map', function () {
-    return view('map');
-})->name('map');
+Route::get('/map', [MapController::class, 'index'])->name('map');
 
 Route::get('adminpanel', function() {
     return view('adminpanel');

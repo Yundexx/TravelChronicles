@@ -16,13 +16,19 @@ class Travel_routeFactory extends Factory
      */
     public function definition(): array
     {
+        $startLat = fake()->latitude(56.94, 56.97);
+        $startLng = fake()->longitude(24.09, 24.14);
+        $endLat = fake()->latitude(56.94, 56.97);
+        $endLng = fake()->longitude(24.09, 24.14);
+
+
         return [
             'name' => fake()->name(),
             'description' => fake()->realtext(100),
-            'country_name' => fake()->country(),
-            'city_name' => fake()->city(),
-            'start_location' => '56.951332440328 656, 24.112974959604376',
-            'end_location' => '56.951332440328600, 24.112974959604300',
+            'country_name' => 'Latvia',
+            'city_name' => 'Riga',
+            'start_location' => "{$startLat}, {$startLng}",
+            'end_location' => "{$endLat}, {$endLng}",
             'user_id'=> 1
         ];
     }

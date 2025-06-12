@@ -5,51 +5,90 @@
   <title>Travel Chronicles</title>
 
   @vite('resources/css/app.css')
-  @stack('styles') <!-- Add this line here -->
+  @stack('styles')
+  <style>
+    #site-content {
+      transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+  </style>
 </head>
 <body>
     @if (session('success'))
-        <div id="flash" class="p-4 text-center bg-green-50 text-green-500 font-bold">
-        {{ session('success') }}
+        <div id="flash" class="p-4 text-center bg-green-50 text-green-500 font-bold transition-opacity duration-700 opacity-100">
+            {{ session('success') }}
         </div>
+        <script>
+            setTimeout(() => {
+                const flash = document.getElementById('flash');
+                const site = document.getElementById('site-content');
+                if (flash) {
+                    flash.style.opacity = '0';
+                    setTimeout(() => {
+                        flash.style.display = 'none';
+                        if (site) {
+                            site.style.transform = 'translateY(-40px)';
+                            setTimeout(() => {
+                                site.style.transform = '';
+                            }, 700);
+                        }
+                    }, 700); // Wait for fade-out before moving site
+                }
+            }, 3000); // 3 seconds
+        </script>
     @endif
-  
-    <header>
-        <nav>
-            <h1>
-            <a href="{{ route('welcome')}}">Travel Chronicles</a>
-            </h1>
-            
-            <a href="{{ route('map')}}" class="btn">Map</a>
 
-            @guest
-            <a href="{{ route('show.login') }}" class="btn">Login</a>
-            <a href="{{ route('show.register') }}" class="btn">Sign up!</a>
-            @endguest
-            
-            @auth
-            <a href="{{ route('home')}}" class="btn">Home</a>
-            <span class="border-r-2 pr-2">
-                <a href="{{ route('profile') }}" class="font-bold">Hello, {{ auth()->user()->name }}</a>
-            </span>
-            <form action="{{ route('logout')}}" method="POST" class="m-0">
-                @csrf
-                <button class="btn">Logout</button>
-            </form>
-            @endauth
+    <div id="site-content">
+        <header>
+            <nav class="w-full flex items-center justify-between gap-5 px-8 py-4">
+                <a href="{{ route('welcome')}}" class="flex items-center shrink-0 text-2xl font-bold m-0 h-full">
+                    Travel Chronicles
+                </a>
+                <div class="flex items-center gap-5">
+                    <a href="{{ route('map')}}" class="btn">Routes map</a>
 
-            
-        </nav>
-    </header> 
+                    @guest
+                        <a href="{{ route('show.login') }}" class="btn">Login</a>
+                        <a href="{{ route('show.register') }}" class="btn">Sign up!</a>
+                    @endguest
 
-    <main class="container flex flex-col min-h-screen">  
-        {{ $slot }}
-    </main>
+                    @auth
+                        <a href="{{ route('home')}}" class="btn">Home</a>
+                        <span class="relative border-r-2 pr-2">
+                            <button
+                                type="button"
+                                class="font-bold cursor-pointer select-none block w-full text-center px-2 py-1 rounded focus:outline-none"
+                                onclick="this.nextElementSibling.classList.toggle('hidden')"
+                                onblur="setTimeout(() => this.nextElementSibling.classList.add('hidden'), 150)"
+                                tabindex="0"
+                            >
+                                Hello, {{ auth()->user()->name }}
+                            </button>
+                            <div
+                                class="hidden absolute right-0 mt-2 bg-white rounded-b shadow-lg border border-t-0 border-gray-200 z-50 flex flex-col items-center min-w-[7rem] w-32 pt-2 pb-2"
+                                style="min-height: 80px;"
+                            >
+                                <a href="{{ route('profile') }}" class="block text-sm px-3 py-1 my-1 rounded hover:bg-blue-50 text-center w-24">Profile</a>
+                                <a href="{{ route('settings') }}" class="block text-sm px-3 py-1 my-1 rounded hover:bg-blue-50 text-center w-24">Settings</a>
+                                <form action="{{ route('logout')}}" method="POST" class="m-0 w-full flex justify-center">
+                                    @csrf
+                                    <button type="submit" class="block text-sm px-3 py-1 rounded hover:bg-blue-50 text-center w-24 p-2">Logout</button>
+                                </form>
+                            </div>
+                        </span>
+                    @endauth
+                </div>
+            </nav>
+        </header> 
 
-    <footer class="text-center mt-8 bottom-0">
-        <a href="{{ route('about')}}" class="btn">About us</a>
-        <p >&copy; {{ date('Y') }} Travel Chronicles. All rights reserved.</p>
-    </footer>
+        <main class="container max-w-screen-xl flex flex-col min-h-screen mx-auto px-8">
+            {{ $slot }}
+        </main>
+
+        <footer class="text-center mt-8 bottom-0">
+            <a href="{{ route('about')}}" class="btn">About us</a>
+            <p >&copy; {{ date('Y') }} Travel Chronicles. All rights reserved.</p>
+        </footer>
+    </div>
     @stack('scripts')
 </body>
 </html>

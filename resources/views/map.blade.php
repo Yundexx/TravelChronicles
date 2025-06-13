@@ -93,6 +93,12 @@
 
     @push('styles')
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <style>
+            #map,
+            .leaflet-container {
+                z-index: 0 !important;
+            }
+        </style>
     @endpush
 
     @push('scripts')

@@ -56,8 +56,7 @@
                                 type="button"
                                 class="font-bold cursor-pointer select-none block w-full text-center px-2 py-1 rounded focus:outline-none"
                                 onclick="this.nextElementSibling.classList.toggle('hidden')"
-                                onblur="setTimeout(() => this.nextElementSibling.classList.add('hidden'), 150)"
-                                tabindex="0"
+                                   tabindex="0"
                             >
                                 Hello, {{ auth()->user()->name }}
                             </button>

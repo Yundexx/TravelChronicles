@@ -41,6 +41,18 @@
 
     @push('styles')
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <style>
+            .glow {
+                box-shadow: 0 0 8px 2px #22c55e, 0 0 0 2px #bbf7d0;
+                transition: box-shadow 0.2s;
+            }
+            #map {
+                z-index: 1 !important;
+            }
+            .leaflet-container {
+                z-index: 1 !important;
+            }
+        </style>
     @endpush
 
     @push('scripts')
@@ -56,16 +68,19 @@
             let mode = null;
             let routeLine = null;
 
-            document.getElementById('set-start').addEventListener('click', function() {
+            const setStartBtn = document.getElementById('set-start');
+            const setEndBtn = document.getElementById('set-end');
+
+            setStartBtn.addEventListener('click', function() {
                 mode = 'start';
-                this.classList.add('bg-blue-600', 'text-white');
-                document.getElementById('set-end').classList.remove('bg-blue-600', 'text-white');
+                setStartBtn.classList.add('glow');
+                setEndBtn.classList.remove('glow');
             });
 
-            document.getElementById('set-end').addEventListener('click', function() {
+            setEndBtn.addEventListener('click', function() {
                 mode = 'end';
-                this.classList.add('bg-blue-600', 'text-white');
-                document.getElementById('set-start').classList.remove('bg-blue-600', 'text-white');
+                setEndBtn.classList.add('glow');
+                setStartBtn.classList.remove('glow');
             });
 
             map.on('click', function(e) {
@@ -83,7 +98,6 @@
 
                 // Draw line if both markers are set
                 if (startMarker && endMarker) {
-                    // Remove previous line if exists
                     if (routeLine) map.removeLayer(routeLine);
                     routeLine = L.polyline([
                         startMarker.getLatLng(),

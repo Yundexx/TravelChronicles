@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\RouteController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -47,4 +48,5 @@ Route::middleware(['auth'])->group(function () {
     })->name('settings');
 
     Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
+    Route::delete('/routes/{route}', [RouteController::class, 'destroy'])->name('routes.destroy');
 });

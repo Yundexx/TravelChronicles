@@ -131,8 +131,7 @@ function filterTable() {
             match = row.children[0].textContent.toLowerCase().includes(value);
         } else if (type === 'city') {
             match = row.children[1].textContent.toLowerCase().includes(value);
-        } else if (type === 'country') {
-            // If you have a country column, adjust the index accordingly
+        } else if (type === 'country') {  
             // match = row.children[2].textContent.toLowerCase().includes(value);
         } else if (type === 'flagged') {
             const checked = row.querySelector('.flag-checkbox').checked;

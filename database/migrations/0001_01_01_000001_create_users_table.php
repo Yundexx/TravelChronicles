@@ -20,7 +20,11 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->rememberToken();
             $table->timestamps();
-            $table->boolean('is_admin')->default(false);
+            $table->foreignId('role_id')
+                ->default(1)
+                ->constrained('roles')
+                ->cascadeOnDelete();
+            $table->string('avatar')->default('default-avatar.png');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

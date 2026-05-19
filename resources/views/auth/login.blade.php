@@ -3,28 +3,31 @@
         <form class="w-full max-w-md bg-white rounded-lg shadow p-8" action="{{ route('login') }}" method="POST">
             @csrf
 
-            <h2>Log In to Your Account</h2>
+            <h2>Pieslēgties savam kontam</h2>
 
-            <label for="email">Email:</label>
+            <label for="email">E-pasts:</label>
             <input 
                 type="email"
                 name="email"
                 required
                 value="{{ old('email') }}"
-                placeholder="Enter your email"
+                placeholder="Ievadi savu e-pastu"
             >
 
-            <label for="password">Password:</label>
+            <label for="password">Parole:</label>
             <input 
                 type="password"
                 name="password"
                 required
-                placeholder="Enter your password"
+                placeholder="Ievadi savu paroli"
             >
 
             <div class="flex items-center justify-between mt-4">
-                <button type="submit" class="btn">Log in</button>
-                <a href="#" class="text-blue-500 text-sm hover:underline">Forgot password?</a>
+                <button type="submit" class="btn">Pieslēgties</button>
+
+                <a href="#" class="text-blue-500 text-sm hover:underline">
+                    Aizmirsi paroli?
+                </a>
             </div>
 
             <!-- validation errors -->

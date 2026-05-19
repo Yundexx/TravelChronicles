@@ -36,9 +36,9 @@ header h1 {
 }
 
 /* form elements */
-form {
-  @apply max-w-screen-sm bg-white rounded-lg shadow p-6;
-}
+/* form {
+  @apply max-w-screen-sm bg-white rounded-lg shadow p-3;
+} */
 
 special-form {
   @apply max-w-screen-sm bg-white;

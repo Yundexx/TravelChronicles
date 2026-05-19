@@ -7,6 +7,8 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\RouteController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,9 +39,7 @@ Route::middleware(['auth'])->group(function () {
         return view('home');
     })->name('home')->middleware('auth');
 
-    Route::get('/createroute', function () {
-        return view('createroute');
-    })->name('create.route');
+    Route::get('/createroute', [MapController::class, 'create'])->name('create.route');
 
     Route::post('/createroute', [MapController::class, 'store'])->name('routes.store');
 
@@ -48,5 +48,19 @@ Route::middleware(['auth'])->group(function () {
     })->name('settings');
 
     Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
+    Route::post('/profile/avatar', [UserProfileController::class, 'updateAvatar'])->name('profile.avatar');
     Route::delete('/routes/{route}', [RouteController::class, 'destroy'])->name('routes.destroy');
+    Route::get('/routes/{route}/edit', [RouteController::class, 'edit'])->name('routes.edit');
+    Route::put('/routes/{route}', [RouteController::class, 'update'])->name('routes.update');
+
+    Route::post('/routes/{route}/favorite', [FavoriteController::class, 'toggle'])
+    ->middleware('auth')
+    ->name('routes.favorite');
+
+        Route::get('/admin/users', [AdminController::class, 'index'])
+        ->name('admin.users');
+
+    Route::delete('/admin/users/{user}', [AdminController::class, 'destroy'])
+        ->name('admin.users.delete');
 });
+

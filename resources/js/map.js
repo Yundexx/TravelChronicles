@@ -164,6 +164,8 @@ document.querySelectorAll('.show-details').forEach(btn => {
 
         document.getElementById('d-name').textContent = name;
         document.getElementById('d-user').textContent = user;
+        document.getElementById('d-country').textContent = row.dataset.country;
+        document.getElementById('d-city').textContent = row.dataset.city;
         document.getElementById('d-date').textContent = new Date(date).toLocaleString();
         document.getElementById('d-description').textContent = description || 'No description';
 

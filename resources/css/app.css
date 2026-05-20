@@ -2,68 +2,277 @@
 
 @tailwind utilities;
 
-
+/* =========================
+   GLOBAL STYLES
+========================= */
 
 body {
-  @apply bg-gradient-to-br from-blue-100 to-blue-50 text-blue-900 min-h-screen;
-  font-family: "Rubik", sans-serif;
+    @apply text-slate-800 min-h-screen overflow-x-hidden;
+    font-family: "Rubik", sans-serif;
 }
+
+/* =========================
+   TYPOGRAPHY
+========================= */
+
 h1 {
-  @apply text-3xl font-extrabold text-blue-700 drop-shadow mb-6;
+    @apply text-4xl md:text-5xl font-extrabold text-blue-800 mb-6 tracking-tight;
 }
+
 h2 {
-  @apply text-2xl font-bold my-4 text-blue-800;
+    @apply text-2xl md:text-3xl font-bold text-blue-800 mb-5;
 }
+
 h3 {
-  @apply text-lg font-semibold my-4 text-blue-700;
+    @apply text-xl font-semibold text-blue-700 mb-4;
 }
-ul {
-  @apply my-10 list-disc list-inside;
-}
+
 p {
-  @apply my-2 leading-relaxed text-blue-900;
+    @apply leading-relaxed text-slate-700;
 }
 
-/* header */
-header {
-  @apply bg-white shadow-md;
-}
-nav {
-  @apply flex items-center gap-5 max-w-screen-lg px-12 py-4 mx-auto;
-}
-header h1 {
-  @apply mr-auto tracking-wide;
+ul {
+    @apply list-disc list-inside;
 }
 
-/* form elements */
-/* form {
-  @apply max-w-screen-sm bg-white rounded-lg shadow p-3;
-} */
+/* =========================
+   LAYOUT
+========================= */
 
-special-form {
-  @apply max-w-screen-sm bg-white;
-}
-
-input, select, textarea {
-  @apply block w-full mt-2 mb-4 p-2 rounded border border-blue-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition;
-}
-
-/* custom classes */
 .container {
-  @apply max-w-screen-xl mx-auto px-8 py-10;
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
 }
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    @apply sticky top-0 z-50
+    bg-white/80 backdrop-blur-xl
+    border-b border-blue-100
+    shadow-sm;
+}
+
+nav {
+    @apply max-w-7xl mx-auto
+    flex items-center justify-between
+    px-4 sm:px-6 lg:px-8
+    py-4;
+}
+
+.nav-links {
+    @apply flex items-center gap-2 md:gap-4 flex-wrap justify-end;
+}
+
+/* =========================
+   CARDS
+========================= */
+
 .card {
-  @apply bg-white rounded-xl border border-blue-200 px-6 py-6 my-4 shadow hover:shadow-lg transition flex flex-col items-start;
+    @apply bg-white/80 backdrop-blur-md
+    border border-white/50
+    rounded-3xl
+    shadow-xl
+    p-6 md:p-8
+    transition-all duration-300;
 }
-.card h2 {
-  @apply text-xl font-bold mb-2 text-blue-600;
+
+.card:hover {
+    @apply shadow-2xl -translate-y-1;
 }
-.card p {
-  @apply text-blue-700;
-}
-.highlight {
-  @apply border-l-4 border-l-blue-400 bg-blue-50;
-}
+
+/* =========================
+   BUTTONS
+========================= */
+
 .btn {
-  @apply rounded px-4 py-2 bg-blue-500 text-white font-semibold shadow hover:bg-blue-600 transition;
+    @apply inline-flex items-center justify-center
+    px-5 py-2.5
+    rounded-2xl
+    bg-gradient-to-r from-blue-500 to-blue-600
+    text-white font-semibold
+    shadow-md
+    hover:from-blue-600 hover:to-blue-700
+    hover:shadow-xl
+    active:scale-95
+    transition-all duration-300;
+}
+
+.btn-success {
+    @apply bg-gradient-to-r from-emerald-500 to-green-600
+    hover:from-emerald-600 hover:to-green-700;
+}
+
+.btn-danger {
+    @apply bg-gradient-to-r from-red-500 to-rose-600
+    hover:from-red-600 hover:to-rose-700;
+}
+
+.btn-secondary {
+    @apply bg-gradient-to-r from-slate-500 to-slate-600
+    hover:from-slate-600 hover:to-slate-700;
+}
+
+/* =========================
+   FORM ELEMENTS
+========================= */
+
+input,
+select,
+textarea {
+    @apply w-full
+    px-4 py-3
+    rounded-2xl
+    border border-blue-100
+    bg-white/80
+    text-slate-700
+    shadow-sm
+    outline-none
+    transition-all duration-300
+    focus:ring-4 focus:ring-blue-100
+    focus:border-blue-400;
+}
+
+label {
+    @apply block mb-2 font-semibold text-blue-800;
+}
+
+textarea {
+    @apply min-h-[120px] resize-none;
+}
+
+/* =========================
+   TABLES
+========================= */
+
+table {
+    @apply w-full border-collapse overflow-hidden rounded-2xl;
+}
+
+thead {
+    @apply bg-blue-50;
+}
+
+th {
+    @apply text-blue-800 font-bold text-left;
+}
+
+th,
+td {
+    @apply px-4 py-4;
+}
+
+tbody tr {
+    @apply border-t border-blue-100
+    hover:bg-blue-50/60
+    transition;
+}
+
+/* =========================
+   MODALS
+========================= */
+
+.modal-backdrop {
+    @apply fixed inset-0
+    bg-black/40 backdrop-blur-sm
+    flex items-center justify-center
+    z-50;
+}
+
+.modal-content {
+    @apply bg-white/95
+    backdrop-blur-xl
+    rounded-3xl
+    shadow-2xl
+    border border-white/30
+    p-6 md:p-8
+    w-full max-w-lg;
+}
+
+/* =========================
+   IMAGES
+========================= */
+
+img {
+    @apply select-none;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+.fade-in {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-blue-50;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-blue-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-blue-400;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    @apply mt-10 pb-8 px-4;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+    h1 {
+        @apply text-3xl;
+    }
+
+    h2 {
+        @apply text-2xl;
+    }
+
+    nav {
+        @apply flex-col gap-4;
+    }
+
+    .nav-links {
+        @apply justify-center;
+    }
+
+    .card {
+        @apply p-5 rounded-2xl;
+    }
+
+    .btn {
+        @apply w-full;
+    }
 }

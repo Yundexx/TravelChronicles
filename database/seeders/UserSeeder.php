@@ -15,42 +15,42 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'admin',
+            'name' => 'Administrators',
             'email' => 'admin@tc.com',
             'password' => Hash::make('AdminPassword311%'),
             'role_id' => 2
         ]);
 
         User::create([
-            'name' => 'qualityTeamMember',
+            'name' => 'QT dalibnieks',
             'email' => 'qtmember@tc.com',
             'password' => Hash::make('QualityTeamPassword211%'),
             'role_id' => 3
         ]);
 
         User::create([
-            'name' => 'regularUser',
+            'name' => 'Alise',
             'email' => 'regularuser@tc.com',
             'password' => Hash::make('RegularUserPassword111%'),
             'role_id' => 1
         ]);
 
         User::create([
-            'name' => 'rareUser',
+            'name' => 'Andrejs',
             'email' => 'rareuser@tc.com',
             'password' => Hash::make('RareUserPassword411%'),
             'role_id' => 1
         ]);
 
         User::create([
-            'name' => 'stubbornUser',
+            'name' => 'Valdis',
             'email' => 'stubbornuser@tc.com',
             'password' => Hash::make('StubbornUserPassword511%'),
             'role_id' => 1
         ]);
 
         User::create([
-            'name' => 'youngUser',
+            'name' => 'Sandra',
             'email' => 'younguser@tc.com',
             'password' => Hash::make('YoungUserPassword611%'),
             'role_id' => 1

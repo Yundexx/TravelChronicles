@@ -17,8 +17,53 @@ class AdminController extends Controller
         $query = User::with('role');
 
         if ($request->search) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                ->orWhere('email', 'like', '%' . $request->search . '%');
+
+            $search = $request->search;
+            $filter = $request->filter;
+
+            switch ($filter) {
+
+                // Meklēšana pēc vārda
+                case 'name':
+
+                    $query->where('name', 'like', '%' . $search . '%');
+
+                    break;
+
+                // Meklēšana pēc e-pasta
+                case 'email':
+
+                    $query->where('email', 'like', '%' . $search . '%');
+
+                    break;
+
+                // Meklēšana pēc izveides datuma
+                case 'created_at':
+
+                    $query->where('created_at', 'like', '%' . $search . '%');
+
+                    break;
+
+                // Meklēšana pēc lomas
+                case 'role':
+
+                    $query->whereHas('role', function ($q) use ($search) {
+
+                        $q->where('name', 'like', '%' . $search . '%');
+
+                    });
+
+                    break;
+
+                // Noklusējuma meklēšana
+                default:
+
+                    $query->where('name', 'like', '%' . $search . '%');
+
+                    break;
+
+            }
+
         }
 
         $users = $query->paginate(5)->withQueryString();

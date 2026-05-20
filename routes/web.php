@@ -49,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
     Route::post('/profile/avatar', [UserProfileController::class, 'updateAvatar'])->name('profile.avatar');
+    Route::post('/profile/bio', [UserProfileController::class, 'updateBio'])->name('profile.bio');
     Route::delete('/routes/{route}', [RouteController::class, 'destroy'])->name('routes.destroy');
     Route::get('/routes/{route}/edit', [RouteController::class, 'edit'])->name('routes.edit');
     Route::put('/routes/{route}', [RouteController::class, 'update'])->name('routes.update');

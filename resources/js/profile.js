@@ -1,74 +1,123 @@
-// === ELEMENTS ===
-const detailsModal = document.getElementById('details-modal');
-const closeDetails = document.getElementById('close-details');
+let detailsMap = null;
+let detailsRouteLine = null;
+let detailsMarkers = [];
 
-const imageModal = document.getElementById('image-modal');
-const modalImage = document.getElementById('modal-image');
-const closeImage = document.getElementById('close-image');
+document.querySelectorAll('.show-details').forEach(button => {
 
-// === OPEN DETAILS ===
-document.querySelectorAll('.show-details').forEach(btn => {
-    btn.addEventListener('click', function () {
+    button.addEventListener('click', function () {
 
         const row = this.closest('tr');
 
-        const name = row.children[0].textContent;
-        const user = row.getAttribute('data-user');
-        const date = row.getAttribute('data-created');
-        const description = row.getAttribute('data-description');
-        const photos = JSON.parse(row.getAttribute('data-photos') || '[]');
+        const name = row.children[0].innerText;
+        const description = row.dataset.description;
+        const created = row.dataset.created;
+        const user = row.dataset.user;
+
+        const points = JSON.parse(row.dataset.points || '[]');
+        const photos = JSON.parse(row.dataset.photos || '[]');
 
         document.getElementById('d-name').textContent = name;
         document.getElementById('d-user').textContent = user;
-        document.getElementById('d-date').textContent = new Date(date).toLocaleString();
-        document.getElementById('d-description').textContent = description || 'Nav apraksta';
+        document.getElementById('d-date').textContent = created;
+        document.getElementById('d-description').textContent = description;
 
         const photosContainer = document.getElementById('d-photos');
         photosContainer.innerHTML = '';
 
-        if (photos.length === 0) {
-            photosContainer.innerHTML = '<p class="text-gray-500">Nav foto</p>';
-        } else {
-            photos.forEach(photo => {
-                photosContainer.innerHTML += `
-                    <img 
-                        src="/storage/${photo.photo_path}" 
-                        class="w-24 h-24 object-cover rounded shadow cursor-pointer hover:scale-105 transition"
-                        onclick="openImage('/storage/${photo.photo_path}')"
-                    >
-                `;
-            });
-        }
+        photos.forEach(photo => {
 
-        detailsModal.classList.remove('hidden');
+            const img = document.createElement('img');
+
+            img.src = '/storage/' + photo.photo_path;
+
+            img.className = `
+                w-24 h-24
+                object-cover
+                rounded-xl
+                shadow
+                cursor-pointer
+                hover:scale-105
+                transition
+            `;
+
+            img.addEventListener('click', () => {
+
+                document.getElementById('image-modal').classList.remove('hidden');
+                document.getElementById('modal-image').src = img.src;
+
+            });
+
+            photosContainer.appendChild(img);
+
+        });
+
+        document.getElementById('details-modal').classList.remove('hidden');
+
+        setTimeout(() => {
+
+            if (detailsMap) {
+                detailsMap.remove();
+            }
+
+            detailsMap = L.map('details-map');
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: ''
+            }).addTo(detailsMap);
+
+            detailsMarkers = [];
+
+            const latlngs = points.map(point => {
+
+                const latlng = [
+                    point.latitude,
+                    point.longitude
+                ];
+
+                const marker = L.marker(latlng).addTo(detailsMap);
+
+                detailsMarkers.push(marker);
+
+                return latlng;
+
+            });
+
+            if (latlngs.length > 0) {
+
+                detailsRouteLine = L.polyline(latlngs, {
+                    color: '#2563eb',
+                    weight: 4
+                }).addTo(detailsMap);
+
+                detailsMap.fitBounds(detailsRouteLine.getBounds(), {
+                    padding: [30, 30]
+                });
+
+            } else {
+
+                detailsMap.setView([56.9496, 24.1052], 7);
+
+            }
+
+        }, 100);
+
     });
+
 });
 
-// === CLOSE DETAILS ===
-if (closeDetails) {
-    closeDetails.addEventListener('click', () => {
-        detailsModal.classList.add('hidden');
-    });
-}
+document.getElementById('close-details').addEventListener('click', () => {
 
-// === IMAGE MODAL ===
-window.openImage = function (src) {
-    modalImage.src = src;
-    imageModal.classList.remove('hidden');
-};
+    document.getElementById('details-modal').classList.add('hidden');
 
-if (closeImage) {
-    closeImage.addEventListener('click', () => {
-        imageModal.classList.add('hidden');
-    });
-}
+    if (detailsMap) {
+        detailsMap.remove();
+        detailsMap = null;
+    }
 
-if (imageModal) {
-    imageModal.addEventListener('click', (e) => {
-        if (e.target === imageModal) {
-            imageModal.classList.add('hidden');
-        }
-    });
-}
+});
 
-console.log("PROFILE JS LOADED");
+document.getElementById('close-image').addEventListener('click', () => {
+
+    document.getElementById('image-modal').classList.add('hidden');
+
+});

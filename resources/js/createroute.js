@@ -8,6 +8,27 @@ let points = [];
 let markers = [];
 let routeLine = null;
 
+const submitButton = document.getElementById('submit-route');
+
+function updateSubmitButton() {
+    if (points.length >= 2) {
+        submitButton.disabled = false;
+
+        submitButton.classList.remove(
+            'opacity-50',
+            'cursor-not-allowed'
+        );
+
+    } else {
+        submitButton.disabled = true;
+
+        submitButton.classList.add(
+            'opacity-50',
+            'cursor-not-allowed'
+        );
+    }
+}
+
 map.on('click', function(e) {
     // ограничение 25 точек
     if (points.length >= 25) {
@@ -37,6 +58,7 @@ map.on('click', function(e) {
 
     // сохраняем JSON в hidden input
     document.getElementById('points-data').value = JSON.stringify(points);
+    updateSubmitButton();
 });
 
 // 🔥 ДОПОЛНИТЕЛЬНО (очень удобно)
@@ -53,6 +75,7 @@ window.clearRoute = function () {
     }
 
     document.getElementById('points-data').value = '';
+    updateSubmitButton();
 }
 
 window.removeLastPoint = function () {
@@ -83,4 +106,5 @@ window.removeLastPoint = function () {
 
     // обновить hidden input
     document.getElementById('points-data').value = JSON.stringify(points);
+    updateSubmitButton();
 }

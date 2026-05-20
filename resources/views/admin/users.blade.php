@@ -8,15 +8,60 @@
         @endif
 
         <!-- SEARCH -->
-        <form method="GET" class="mb-4 flex gap-2">
-            <input 
-                type="text" 
-                name="search" 
+        <form
+            method="GET"
+            class="
+                mb-5
+                flex flex-wrap
+                items-center
+                gap-3
+                bg-white/90
+                backdrop-blur-md
+                rounded-3xl
+                shadow-xl
+                border border-blue-100
+                p-4
+            "
+        >
+
+            <!-- FILTER -->
+            <select
+                name="filter"
+                class="w-[170px]"
+            >
+
+                <option value="name" {{ request('filter') == 'name' ? 'selected' : '' }}>
+                    Vārds
+                </option>
+
+                <option value="email" {{ request('filter') == 'email' ? 'selected' : '' }}>
+                    E-pasts
+                </option>
+
+                <option value="created_at" {{ request('filter') == 'created_at' ? 'selected' : '' }}>
+                    Izveidots
+                </option>
+
+                <option value="role" {{ request('filter') == 'role' ? 'selected' : '' }}>
+                    Loma
+                </option>
+
+            </select>
+
+            <!-- SEARCH -->
+            <input
+                type="text"
+                name="search"
                 value="{{ request('search') }}"
                 placeholder="Meklēt lietotājus..."
-                class="border rounded px-3 py-2 w-full"
+                class="flex-1 min-w-[250px]"
             >
-            <button class="btn">Meklēt</button>
+
+            <!-- BUTTON -->
+            <button class="btn">
+                Meklēt
+            </button>
+
         </form>
 
         <!-- TABLE -->

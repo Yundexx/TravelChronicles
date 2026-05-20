@@ -60,7 +60,19 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn w-full">Izveidot maršrutu</button>
+                <button
+                    type="submit"
+                    id="submit-route"
+                    disabled
+                    class="
+                        btn w-full
+                        opacity-50
+                        cursor-not-allowed
+                        transition
+                    "
+                >
+                    Izveidot maršrutu
+                </button>
             </form>
         </div>
     </div>

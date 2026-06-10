@@ -158,7 +158,7 @@
                                         Izlase
                                     </th>
 
-                                @endif
+                                @endifnpm install
                             @endauth
 
                             <!-- ACTIONS -->

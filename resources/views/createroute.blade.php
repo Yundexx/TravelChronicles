@@ -1,4 +1,3 @@
-{{-- filepath: resources/views/createroute.blade.php --}}
 <x-layout>
     <div class="flex flex-col items-center mt-10">
         <div class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-6 mb-8">
@@ -96,8 +95,5 @@
     @push('scripts')
         <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
         @vite('resources/js/createroute.js')
-        <script>
-           
-        </script>
-        @endpush
+    @endpush
 </x-layout>

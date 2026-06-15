@@ -8,13 +8,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Role;
 
+/**
+ * This model represents a system user.
+ * It stores user account information and relationships.
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Mass assignable attributes.
      *
      * @var list<string>
      */
@@ -25,7 +29,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Hidden attributes for serialization.
      *
      * @var list<string>
      */
@@ -35,7 +39,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Attribute type casting.
      *
      * @return array<string, string>
      */
@@ -47,11 +51,17 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get the role assigned to the user.
+     */
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
 
+    /**
+     * Get the user's favorite routes.
+     */
     public function favorites()
     {
         return $this->hasMany(Favorite::class);

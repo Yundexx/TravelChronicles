@@ -1,22 +1,33 @@
+// Manage route visualization, feedback, route filtering, favorites, and modal windows. Basically all map-related interactions on the route listing page.
+
+// Initialize the map
 let map = L.map('map').setView([56.9512, 24.1129], 9);
+
 let markers = [];
 let line = null;
 
+// Load OpenStreetMap tiles
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    // attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    // attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
+/**
+ * Remove all markers and route lines from the map.
+ */
 function clearMap() {
     markers.forEach(m => map.removeLayer(m));
     markers = [];
+
     if (line) {
         map.removeLayer(line);
         line = null;
     }
 }
 
+// Display a selected route on the map
 document.querySelectorAll('.select-route').forEach(btn => {
     btn.addEventListener('click', function() {
+
         const row = this.closest('tr');
         const points = JSON.parse(row.getAttribute('data-points'));
 
@@ -27,29 +38,28 @@ document.querySelectorAll('.select-route').forEach(btn => {
             return;
         }
 
-        // координаты маршрута
+        // Convert route points to map coordinates
         const latlngs = points.map(p => [
             parseFloat(p.latitude),
             parseFloat(p.longitude)
         ]);
 
-        // рисуем линию
+        // Draw route line
         line = L.polyline(latlngs, { color: 'blue' }).addTo(map);
 
-        // добавляем маркеры
+        // Add route markers
         latlngs.forEach(coord => {
             markers.push(L.marker(coord).addTo(map));
         });
 
-        // центрируем карту
+        // Center map around the route
         map.fitBounds(line.getBounds(), { padding: [50, 50] });
     });
 });
 
-
-
-// Feedback modal logic
+// Feedback modal functionality
 let currentRouteId = null;
+
 const mapColumn = document.getElementById('map-column');
 const feedbackModal = document.getElementById('feedback-modal');
 const feedbackList = document.getElementById('feedback-list');
@@ -57,6 +67,7 @@ const feedbackForm = document.getElementById('feedback-form');
 const feedbackInput = document.getElementById('feedback-input');
 const closeFeedback = document.getElementById('close-feedback');
 
+// Close feedback modal
 if (closeFeedback) {
     closeFeedback.addEventListener('click', () => {
         feedbackModal.classList.add('hidden');
@@ -64,13 +75,16 @@ if (closeFeedback) {
     });
 }
 
+// Submit new feedback
 if (feedbackForm && feedbackInput) {
     feedbackForm.addEventListener('submit', async function(e) {
+
         e.preventDefault();
+
         const feedback = feedbackInput.value.trim();
+
         if (!feedback) return;
 
-        // Get CSRF token safely
         const csrfMeta = document.querySelector('meta[name="csrf-token"]');
         const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
 
@@ -82,64 +96,96 @@ if (feedbackForm && feedbackInput) {
             },
             body: JSON.stringify({ feedback })
         });
+
         feedbackInput.value = '';
+
         await loadFeedbacks(currentRouteId);
     });
 }
 
+// Open feedback modal
 document.querySelectorAll('.show-feedback').forEach(btn => {
     btn.addEventListener('click', async function() {
+
         const row = this.closest('tr');
+
         currentRouteId = row.getAttribute('data-route-id');
+
         feedbackModal.classList.remove('hidden');
         mapColumn.classList.add('hidden');
-        if (feedbackInput) feedbackInput.value = '';
-        await loadFeedbacks(currentRouteId);
 
-        // description logic
-        // const description = this.getAttribute('data-description') || 'No description';
-        // const name = this.getAttribute('data-route-name') || '';
-        // document.getElementById('route-description').innerHTML =
-        //     `<div class="mb-2"><span class="font-bold">${name}</span></div>
-        //      <div>${description}</div>`;
+        if (feedbackInput) {
+            feedbackInput.value = '';
+        }
+
+        await loadFeedbacks(currentRouteId);
     });
 });
 
+/**
+ * Load feedback for the selected route.
+ */
 async function loadFeedbacks(routeId) {
+
     feedbackList.innerHTML = '<li>Loading...</li>';
+
     const res = await fetch(`/routes/${routeId}/feedback`);
     const data = await res.json();
+
     feedbackList.innerHTML = '';
+
     if (data.length === 0) {
+
         feedbackList.innerHTML = '<li class="text-gray-500">No feedbacks yet.</li>';
+
     } else {
+
         data.forEach(fb => {
-            feedbackList.innerHTML += `<li class="border-b py-1"><span class="font-semibold">${fb.user}:</span> ${fb.feedback}</li>`;
+            feedbackList.innerHTML += `
+                <li class="border-b py-1">
+                    <span class="font-semibold">${fb.user}:</span> ${fb.feedback}
+                </li>
+            `;
         });
+
     }
 }
 
+// Route filtering functionality
 const filterType = document.getElementById('filter-type');
 const filterInput = document.getElementById('filter-input');
 const tableRows = document.querySelectorAll('#routes-table tbody tr');
 
+/**
+ * Filter routes based on selected criteria.
+ */
 function filterTable() {
+
     const type = filterType.value;
     const value = filterInput.value.toLowerCase();
 
     tableRows.forEach(row => {
+
         let match = false;
+
         if (type === 'name') {
             match = row.children[0].textContent.toLowerCase().includes(value);
+
         } else if (type === 'city') {
             match = row.children[1].textContent.toLowerCase().includes(value);
-        } else if (type === 'country') {  
-            // match = row.children[2].textContent.toLowerCase().includes(value);
+
+        } else if (type === 'country') {
+
         } else if (type === 'flagged') {
+
             const checkbox = row.querySelector('.flag-checkbox');
             const checked = checkbox ? checkbox.checked : false;
-            match = value === '' || (value === 'yes' && checked) || (value === 'no' && !checked);
+
+            match = value === ''
+                || (value === 'yes' && checked)
+                || (value === 'no' && !checked);
         }
+
         row.style.display = match ? '' : 'none';
     });
 }
@@ -149,11 +195,14 @@ if (filterType && filterInput) {
     filterInput.addEventListener('input', filterTable);
 }
 
+// Route details modal
 const detailsModal = document.getElementById('details-modal');
 const closeDetails = document.getElementById('close-details');
 
+// Open route details modal
 document.querySelectorAll('.show-details').forEach(btn => {
     btn.addEventListener('click', function() {
+
         const row = this.closest('tr');
 
         const name = row.children[0].textContent;
@@ -169,13 +218,16 @@ document.querySelectorAll('.show-details').forEach(btn => {
         document.getElementById('d-date').textContent = new Date(date).toLocaleString();
         document.getElementById('d-description').textContent = description || 'No description';
 
-        // 🔥 ВСТАВКА ФОТО
+        // Display route photos
         const photosContainer = document.getElementById('d-photos');
         photosContainer.innerHTML = '';
 
         if (photos.length === 0) {
+
             photosContainer.innerHTML = '<p class="text-gray-500">No photos</p>';
+
         } else {
+
             photos.forEach(photo => {
                 photosContainer.innerHTML += `
                     <img 
@@ -185,6 +237,7 @@ document.querySelectorAll('.show-details').forEach(btn => {
                     >
                 `;
             });
+
         }
 
         detailsModal.classList.remove('hidden');
@@ -192,6 +245,7 @@ document.querySelectorAll('.show-details').forEach(btn => {
     });
 });
 
+// Close route details modal
 if (closeDetails) {
     closeDetails.addEventListener('click', () => {
         detailsModal.classList.add('hidden');
@@ -199,12 +253,15 @@ if (closeDetails) {
     });
 }
 
+// Toggle route favorites
 document.querySelectorAll('.favorite-checkbox').forEach(checkbox => {
     checkbox.addEventListener('change', async function () {
 
         const routeId = this.getAttribute('data-route-id');
 
-        const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const csrf = document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute('content');
 
         const res = await fetch(`/routes/${routeId}/favorite`, {
             method: 'POST',
@@ -214,33 +271,41 @@ document.querySelectorAll('.favorite-checkbox').forEach(checkbox => {
         });
 
         if (res.ok) {
+
             const data = await res.json();
+
             this.checked = data.favorited;
+
         } else {
+
             alert('Error updating favorites');
             this.checked = !this.checked;
+
         }
     });
 });
 
+// Image preview modal
 const imageModal = document.getElementById('image-modal');
 const modalImage = document.getElementById('modal-image');
 const closeImage = document.getElementById('close-image');
 
-// открыть
+/**
+ * Open image preview modal.
+ */
 window.openImage = function(src) {
     modalImage.src = src;
     imageModal.classList.remove('hidden');
 }
 
-// закрыть по кнопке
+// Close image modal with button
 if (closeImage) {
     closeImage.addEventListener('click', () => {
         imageModal.classList.add('hidden');
     });
 }
 
-// закрыть по клику вне картинки
+// Close image modal when clicking outside the image
 if (imageModal) {
     imageModal.addEventListener('click', (e) => {
         if (e.target === imageModal) {

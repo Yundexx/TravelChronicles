@@ -17,10 +17,10 @@ class TravelRouteSeeder extends Seeder
      */
     public function run(): void
     {
-        // Получаем первого пользователя
+        // Getting first user (administrator) to associate with the route
         $user = User::first();
 
-        // Если пользователей нет — создаём
+        // in case there are no users, create a demo user
         if (!$user) {
             $user = User::create([
                 'name' => 'Demo User',
@@ -29,7 +29,7 @@ class TravelRouteSeeder extends Seeder
             ]);
         }
 
-        // Создание маршрута
+        // creating related data for the route
         $route = Travel_route::create([
             'name' => 'Riga Old Town Walk',
             'description' => 'A beautiful walking route through the historical center of Riga.',
@@ -39,7 +39,7 @@ class TravelRouteSeeder extends Seeder
             'flagged' => false,
         ]);
 
-        // Точки маршрута
+        // creating route points
         $points = [
             [
                 'latitude' => 56.9496,
@@ -67,13 +67,13 @@ class TravelRouteSeeder extends Seeder
             ]);
         }
 
-        // Фото маршрута
+        // adding route photo
         RoutePhoto::create([
             'route_id' => $route->id,
             'photo_path' => 'route_photos/demo-route.jpg',
         ]);
 
-        // Теги
+        // adding tags
         $tags = ['Historical', 'City', 'Walking'];
 
         foreach ($tags as $tagName) {
@@ -85,7 +85,7 @@ class TravelRouteSeeder extends Seeder
             $route->tags()->attach($tag->id);
         }
 
-        // Отзыв
+        // creating feedback for the route
         Feedback::create([
             'route_id' => $route->id,
             'user_id' => $user->id,

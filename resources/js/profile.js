@@ -1,13 +1,17 @@
+// manage the route details modal - displaying route information, photos, and a route preview map.
+
 let detailsMap = null;
 let detailsRouteLine = null;
 let detailsMarkers = [];
 
+// Open route details modal
 document.querySelectorAll('.show-details').forEach(button => {
 
     button.addEventListener('click', function () {
 
         const row = this.closest('tr');
 
+        // Retrieve route information
         const name = row.children[0].innerText;
         const description = row.dataset.description;
         const created = row.dataset.created;
@@ -16,11 +20,13 @@ document.querySelectorAll('.show-details').forEach(button => {
         const points = JSON.parse(row.dataset.points || '[]');
         const photos = JSON.parse(row.dataset.photos || '[]');
 
+        // Populate modal fields
         document.getElementById('d-name').textContent = name;
         document.getElementById('d-user').textContent = user;
         document.getElementById('d-date').textContent = created;
         document.getElementById('d-description').textContent = description;
 
+        // Load route photos
         const photosContainer = document.getElementById('d-photos');
         photosContainer.innerHTML = '';
 
@@ -40,6 +46,7 @@ document.querySelectorAll('.show-details').forEach(button => {
                 transition
             `;
 
+            // Open image preview when clicked
             img.addEventListener('click', () => {
 
                 document.getElementById('image-modal').classList.remove('hidden');
@@ -51,8 +58,10 @@ document.querySelectorAll('.show-details').forEach(button => {
 
         });
 
+        // Display details modal
         document.getElementById('details-modal').classList.remove('hidden');
 
+        // Initialize map after modal becomes visible
         setTimeout(() => {
 
             if (detailsMap) {
@@ -67,6 +76,7 @@ document.querySelectorAll('.show-details').forEach(button => {
 
             detailsMarkers = [];
 
+            // Create markers from route points
             const latlngs = points.map(point => {
 
                 const latlng = [
@@ -84,17 +94,20 @@ document.querySelectorAll('.show-details').forEach(button => {
 
             if (latlngs.length > 0) {
 
+                // Draw route line
                 detailsRouteLine = L.polyline(latlngs, {
                     color: '#2563eb',
                     weight: 4
                 }).addTo(detailsMap);
 
+                // Fit map to route bounds
                 detailsMap.fitBounds(detailsRouteLine.getBounds(), {
                     padding: [30, 30]
                 });
 
             } else {
 
+                // Default map view if no points exist
                 detailsMap.setView([56.9496, 24.1052], 7);
 
             }
@@ -105,6 +118,7 @@ document.querySelectorAll('.show-details').forEach(button => {
 
 });
 
+// Close route details modal
 document.getElementById('close-details').addEventListener('click', () => {
 
     document.getElementById('details-modal').classList.add('hidden');
@@ -116,6 +130,7 @@ document.getElementById('close-details').addEventListener('click', () => {
 
 });
 
+// Close image preview modal
 document.getElementById('close-image').addEventListener('click', () => {
 
     document.getElementById('image-modal').classList.add('hidden');

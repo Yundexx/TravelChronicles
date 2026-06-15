@@ -4,7 +4,7 @@
         <!-- Greeting Card -->
         <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl mb-8 text-center">
             <h1 class="text-2xl font-bold mb-4">
-                Sveiks, {{ auth()->user()->name }}!
+                Sveiki, {{ auth()->user()->name }}!
             </h1>
 
             <p class="text-gray-700 mb-4">

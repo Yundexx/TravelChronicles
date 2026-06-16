@@ -4,16 +4,16 @@
 
 <x-layout>
 
-    <div class="w-full max-w-[1700px] mx-auto flex flex-col xl:flex-row gap-8 my-8 px-4">
+    <div class="w-full max-w-[1900px] mx-auto flex flex-col xl:flex-row gap-10 my-8 px-4">
 
         <!-- MAP COLUMN -->
-        <div class="w-full xl:w-[32%] flex justify-center" id="map-column">
+        <div class="w-full xl:w-[42%] flex justify-center" id="map-column">
 
             <div
                 id="map"
                 class="
                     w-full
-                    max-w-[650px]
+                    max-w-[850px]
                     h-[600px]
                     rounded-3xl
                     shadow-2xl
@@ -25,7 +25,7 @@
         </div>
 
         <!-- TABLE COLUMN -->
-        <div class="w-full xl:w-[68%] mb-10">
+        <div class="w-full xl:w-[58%] mb-10">
 
             <h2 class="text-3xl font-bold text-blue-800 mb-5">
                 Pieejamie maršruti
@@ -59,19 +59,18 @@
                         name="filter"
                         class="w-[140px] min-w-[140px]"
                     >
-                        <option value="name">Nosaukums</option>
-                        <option value="city">Pilsēta</option>
-                        <option value="country">Valsts</option>
-                    </select>
+                        <option value="name" {{ request('filter') == 'name' ? 'selected' : '' }}>
+                            Nosaukums
+                        </option>
 
-                    <!-- SEARCH -->
-                    <input
-                        name="search"
-                        value="{{ request('search') }}"
-                        type="text"
-                        class="w-[220px] min-w-[220px]"
-                        placeholder="Meklēt..."
-                    />
+                        <option value="city" {{ request('filter') == 'city' ? 'selected' : '' }}>
+                            Pilsēta
+                        </option>
+
+                        <option value="country" {{ request('filter') == 'country' ? 'selected' : '' }}>
+                            Valsts
+                        </option>
+                    </select>
 
                     <!-- TAGS -->
                     <select
@@ -92,6 +91,16 @@
                         @endforeach
 
                     </select>
+
+                    <!-- SEARCH -->
+                    <input
+                        name="search"
+                        value="{{ request('search') }}"
+                        type="text"
+                        class="w-[220px] min-w-[220px]"
+                        placeholder="Meklēt..."
+                    />
+
 
                     <!-- BUTTON -->
                     <button
@@ -120,8 +129,7 @@
                 <table
                     class="
                         w-full
-                        min-w-[900px]
-                        table-fixed
+                        table-auto
                         bg-white
                     "
                     id="routes-table"
@@ -240,12 +248,19 @@
 
                                         <td class="px-3 py-3 text-center align-top">
 
-                                            <input
-                                                type="checkbox"
-                                                class="favorite-checkbox scale-110"
+                                            <button
+                                                class="
+                                                    favorite-btn
+                                                    btn
+                                                    px-3
+                                                    py-2
+                                                    {{ $route->is_favorited ? 'favorite-active' : '' }}
+                                                "
                                                 data-route-id="{{ $route->id }}"
-                                                {{ $route->is_favorited ? 'checked' : '' }}
+                                                title="Izlase"
                                             >
+                                                ★
+                                            </button>
 
                                         </td>
 
@@ -256,8 +271,11 @@
 
                                     <div class="flex flex-nowrap gap-1">
 
-                                        <button class="btn select-route">
-                                            Parādīt
+                                        <button
+                                            class="btn select-route route-visibility-btn text-xl px-4"
+                                            title="Parādīt kartē"
+                                        >
+                                            👁
                                         </button>
 
                                         <button class="btn show-feedback">

@@ -81,7 +81,7 @@
             <nav class="w-full bg-transparent">
 
                 <div class="
-                    max-w-6xl mx-auto
+                    max-w-[1700px] mx-auto
                     px-8 lg:px-12
                     py-5
                     flex flex-col lg:flex-row
@@ -233,7 +233,7 @@
         </header>
 
         <!-- CONTENT -->
-        <main class="container max-w-screen-xl flex-1 flex flex-col px-4 md:px-6">
+        <main class="container max-w-[1850px] flex-1 flex flex-col px-4 md:px-6">
             {{ $slot }}
         </main>
 

@@ -5,6 +5,7 @@ let map = L.map('map').setView([56.9512, 24.1129], 9);
 
 let markers = [];
 let line = null;
+let activeRouteButton = null;
 
 // Load OpenStreetMap tiles
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -26,7 +27,15 @@ function clearMap() {
 
 // Display a selected route on the map
 document.querySelectorAll('.select-route').forEach(btn => {
+
     btn.addEventListener('click', function() {
+
+        if (activeRouteButton) {
+            activeRouteButton.classList.remove('route-active');
+        }
+
+        activeRouteButton = this;
+        this.classList.add('route-active');
 
         const row = this.closest('tr');
         const points = JSON.parse(row.getAttribute('data-points'));
@@ -38,25 +47,26 @@ document.querySelectorAll('.select-route').forEach(btn => {
             return;
         }
 
-        // Convert route points to map coordinates
         const latlngs = points.map(p => [
             parseFloat(p.latitude),
             parseFloat(p.longitude)
         ]);
 
-        // Draw route line
-        line = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+        line = L.polyline(latlngs, {
+            color: 'blue'
+        }).addTo(map);
 
-        // Add route markers
         latlngs.forEach(coord => {
             markers.push(L.marker(coord).addTo(map));
         });
 
-        // Center map around the route
-        map.fitBounds(line.getBounds(), { padding: [50, 50] });
+        map.fitBounds(
+            line.getBounds(),
+            { padding: [50, 50] }
+        );
     });
-});
 
+});
 // Feedback modal functionality
 let currentRouteId = null;
 
@@ -224,7 +234,7 @@ document.querySelectorAll('.show-details').forEach(btn => {
 
         if (photos.length === 0) {
 
-            photosContainer.innerHTML = '<p class="text-gray-500">No photos</p>';
+            photosContainer.innerHTML = '<p class="text-gray-500">Nav fotografijas</p>';
 
         } else {
 
@@ -254,8 +264,9 @@ if (closeDetails) {
 }
 
 // Toggle route favorites
-document.querySelectorAll('.favorite-checkbox').forEach(checkbox => {
-    checkbox.addEventListener('change', async function () {
+document.querySelectorAll('.favorite-btn').forEach(btn => {
+
+    btn.addEventListener('click', async function () {
 
         const routeId = this.getAttribute('data-route-id');
 
@@ -270,19 +281,21 @@ document.querySelectorAll('.favorite-checkbox').forEach(checkbox => {
             }
         });
 
-        if (res.ok) {
-
-            const data = await res.json();
-
-            this.checked = data.favorited;
-
-        } else {
-
+        if (!res.ok) {
             alert('Error updating favorites');
-            this.checked = !this.checked;
-
+            return;
         }
+
+        const data = await res.json();
+
+        if (data.favorited) {
+            this.classList.add('favorite-active');
+        } else {
+            this.classList.remove('favorite-active');
+        }
+
     });
+
 });
 
 // Image preview modal

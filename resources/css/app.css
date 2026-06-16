@@ -114,6 +114,26 @@ nav {
     hover:from-slate-600 hover:to-slate-700;
 }
 
+.route-active {
+    background: linear-gradient(
+        to right,
+        rgb(34 197 94),
+        rgb(22 163 74)
+    ) !important;
+}
+
+.route-visibility-btn {
+    min-width: 52px;
+}
+
+.favorite-active {
+    background: linear-gradient(
+        to right,
+        rgb(34 197 94),
+        rgb(22 163 74)
+    ) !important;
+}
+
 /* =========================
    FORM ELEMENTS
 ========================= */

@@ -50,8 +50,26 @@ class MapController extends Controller
         }
 
         // Paginate routes and retrieve all available tags
-        $routes = $query->paginate(10);
+        $routes = $query->paginate(5);
         $tags = Tag::all();
+
+        if (auth()->check()) {
+
+            $favoriteIds = auth()->user()
+                ->favorites()
+                ->pluck('route_id')
+                ->toArray();
+
+            $routes->getCollection()->transform(function ($route) use ($favoriteIds) {
+
+                $route->is_favorited = in_array(
+                    $route->id,
+                    $favoriteIds
+                );
+
+                return $route;
+            });
+        }
 
         return view('map', compact('routes', 'tags'));
     }
@@ -83,7 +101,7 @@ class MapController extends Controller
         // Validate route data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:500',
             'country_name' => 'required|string|max:255',
             'city_name' => 'nullable|string|max:255',
             'photos.*' => 'image|mimes:jpg,jpeg,png|max:2048',
@@ -127,7 +145,7 @@ class MapController extends Controller
             }
         }
 
-        return redirect()->route('map')->with('success', 'Route created successfully!');
+        return redirect()->route('map')->with('success', 'Maršruts veiksmīgi izveidots!');
     }
 
     /**

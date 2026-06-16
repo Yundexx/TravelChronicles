@@ -14,7 +14,7 @@
             <p class="text-gray-600 mb-6">
                 Vai šodien nav lieliska diena pastaigai svaigā gaisā? 
                 Apskati, ar kādiem maršrutiem mūsu lietotāji pēdējā laikā ir dalījušies!
-                Kad izmēģināsi kādu no tiem, neaizmirsti atstāt atsauksmi — dod autoram zināt, kas bija īpaši labs!
+                Kad izmēģināsi kādu no tiem, neaizmirsti atstāt atsauksmi - dod autoram zināt, kas bija īpaši labs!
             </p>
 
             <a href="{{ route('map') }}" 

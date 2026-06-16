@@ -11,7 +11,7 @@
                 name="email"
                 required
                 value="{{ old('email') }}"
-                placeholder="Ievadi savu e-pastu"
+                placeholder="Ievadiet savu e-pastu"
             >
 
             <label for="password">Parole:</label>
@@ -19,15 +19,11 @@
                 type="password"
                 name="password"
                 required
-                placeholder="Ievadi savu paroli"
+                placeholder="Ievadiet savu paroli"
             >
 
             <div class="flex items-center justify-between mt-4">
                 <button type="submit" class="btn">Pieslēgties</button>
-
-                <a href="#" class="text-blue-500 text-sm hover:underline">
-                    Aizmirsi paroli?
-                </a>
             </div>
 
             <!-- validation errors -->

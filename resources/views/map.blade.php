@@ -230,12 +230,12 @@
 
                                         <td class="px-3 py-3 text-center align-top">
 
-                                            <input
-                                                type="checkbox"
-                                                class="flag-checkbox scale-110"
+                                            <button
+                                                class="flag-btn btn {{ $route->flagged ? 'favorite-active' : '' }}"
                                                 data-route-id="{{ $route->id }}"
-                                                {{ $route->flagged ? 'checked' : '' }}
                                             >
+                                                Kārogot
+                                            </button>
 
                                         </td>
 

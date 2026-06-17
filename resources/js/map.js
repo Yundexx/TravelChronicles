@@ -303,6 +303,41 @@ const imageModal = document.getElementById('image-modal');
 const modalImage = document.getElementById('modal-image');
 const closeImage = document.getElementById('close-image');
 
+// Toggle flagged routes
+document.querySelectorAll('.flag-btn').forEach(btn => {
+
+    btn.addEventListener('click', async function () {
+
+        const routeId = this.dataset.routeId;
+
+        const csrf = document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute('content');
+
+        const res = await fetch(`/routes/${routeId}/flag`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrf,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!res.ok) {
+            alert('Kļūda saglabājot atzīmi');
+            return;
+        }
+
+        const data = await res.json();
+
+        if (data.flagged) {
+            this.classList.add('favorite-active');
+        } else {
+            this.classList.remove('favorite-active');
+        }
+
+    });
+
+});
 /**
  * Open image preview modal.
  */
